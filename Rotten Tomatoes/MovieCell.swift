@@ -12,10 +12,14 @@ class MovieCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var synopsisLabel: UILabel!
     @IBOutlet weak var posterView: UIImageView!
+    @IBOutlet weak var posterSpinnerView: UIActivityIndicatorView!
+    @IBOutlet weak var cellSpinnerView: UIActivityIndicatorView!
+
 
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        cellSpinnerView.startAnimating()
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

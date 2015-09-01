@@ -12,6 +12,7 @@ class MovieDetailsViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var synopsisLabel: UILabel!
+    @IBOutlet weak var imageSpinnerView: UIActivityIndicatorView!
 
     var movie: NSDictionary!
 
@@ -20,9 +21,26 @@ class MovieDetailsViewController: UIViewController {
 
         titleLabel.text = movie["title"] as? String
         synopsisLabel.text = movie["synopsis"] as? String
+        imageSpinnerView.startAnimating()
         
-        let url = NSURL(string: movie.valueForKeyPath("posters.thumbnail") as! String)!
-        imageView.setImageWithURL(url)
+//        let url = NSURL(string: movie.valueForKeyPath("posters.thumbnail") as! String)!
+//        imageView.setImageWithURL(url)
+        
+        var origUrl = movie.valueForKeyPath("posters.thumbnail") as! String
+        var range = origUrl.rangeOfString(".*cloudfront.net/", options: .RegularExpressionSearch)
+        if let range = range {
+            origUrl = origUrl.stringByReplacingCharactersInRange(range, withString: "https://content6.flixster.com/")
+        }
+
+        let url = NSURL(string: origUrl as String)!
+        
+        let request = NSURLRequest(URL: url)
+        
+        imageView.setImageWithURLRequest(request, placeholderImage: nil, success: { (request, response, image) -> Void in
+            self.imageSpinnerView.hidden = true
+            self.imageView.image = image
+            }) { (request, response, error) -> Void in
+        }
     }
 
     override func didReceiveMemoryWarning() {
